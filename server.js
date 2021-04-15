@@ -12,6 +12,7 @@ app.use(express.json());
 app.use(cors());
 
 app.use("/api/v1/users",routes.users)
+app.use("/api/v1/products",routes.products)
 app.get("/",(req,res)=>{
   res.send("home")
 });

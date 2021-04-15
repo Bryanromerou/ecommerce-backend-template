@@ -2,10 +2,22 @@ const db = require("../models");
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-const index = (req,res)=>{
-  res.send(process.env.jwtSecret)
+const index = async (req,res)=>{
+  try {
+    const users = await db.User.find({})
+    res.status(200).json({users})
+  } catch (error) {
+    res.status(400).json({ ERROR: error.message });
+  }
 };
-
+const show = async(req,res) =>{
+  try {
+    const user = await db.User.findById(req.params.id).populate(['cart','created_products'])
+    res.status(200).json({user})
+  } catch (error) {
+    res.status(400).json({ ERROR: error.message });
+  }
+}
 const create = async (req,res)=>{
   const {email, password, name} = req.body;
 
@@ -14,7 +26,7 @@ const create = async (req,res)=>{
   }
 
   try {
-    const user = await User.findOne({email});
+    const user = await db.User.findOne({email});
     if (user) throw Error('User under this email already exist');
 
     const salt = await bcrypt.genSalt(10);
@@ -52,9 +64,8 @@ const create = async (req,res)=>{
 
 module.exports = {
   index,
-  // show,
+  show,
   create,
   // update,
   // destroy,
-  // findById  
 }
