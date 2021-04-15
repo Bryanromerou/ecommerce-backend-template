@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 
 const index = async (req,res)=>{
   try {
-    const users = await db.User.find({})
+    const users = await db.User.find({}).populate('created_products')
     res.status(200).json({users})
   } catch (error) {
     res.status(400).json({ ERROR: error.message });

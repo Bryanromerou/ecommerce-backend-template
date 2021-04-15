@@ -43,11 +43,23 @@ const update = async(req,res)=>{
   }
 }
 
+const destroy = async(req,res)=>{
+  try {
+    const productId = req.params.id;
+    const deletedProduct = await db.Product.findByIdAndDelete(productId)
+    const productPublisher = await db.User.findOne({'created_products':productId})
+    await productPublisher.created_products.remove(productId)
+    await productPublisher.save()
+    res.status(200).json({deletedProduct}) 
+  } catch (error) {
+    res.status(400).json({ ERROR: error.message });
+  }
+}
+
 module.exports = {
   index,
   show,
   create,
   update,
-  // destroy,
-  // findById  
+  destroy,
 }
