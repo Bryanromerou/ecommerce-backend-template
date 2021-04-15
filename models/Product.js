@@ -7,9 +7,8 @@ const ProductSchema = new Schema({
     type: String,
     required: true
   },
-  bio: {
+  description: {
     type: String,
-    required: true,
   },
   price: {
     type: Number,
