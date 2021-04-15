@@ -1,5 +1,10 @@
 const db = require("../models");
 
+/**
+ * @route   GET /api/v1/products
+ * @desc    Returns all of the products
+ * @access  Public
+ */
 const index = async (req,res) =>{
   try {
     const products = await db.Product.find({})
@@ -9,6 +14,11 @@ const index = async (req,res) =>{
   }
 }
 
+/**
+ * @route   GET /api/v1/products/:id
+ * @desc    Returns Product with given ID
+ * @access  Public
+ */
 const show = async(req,res) =>{
   try {
     const product = await db.Product.findById(req.params.id)
@@ -18,6 +28,11 @@ const show = async(req,res) =>{
   }
 }
 
+/**
+ * @route   POST /api/v1/products
+ * @desc    Creates Product associated with given User ID
+ * @access  Public --NEED TO CHANGE SO THAT ONLY ADMINS ARE ABLE TO ADD PRODUCTS
+ */
 const create = async(req,res)=>{
   try {
     const user = await db.User.findById(req.body.user)
@@ -34,6 +49,12 @@ const create = async(req,res)=>{
   }
 }
 
+
+/**
+ * @route   PUT /api/v1/products/:id
+ * @desc    Edits Product
+ * @access  Public --NEED TO CHANGE SO THAT ONLY ADMINS ARE ABLE TO ADD PRODUCTS
+ */
 const update = async(req,res)=>{
   try {
     const product = await db.Product.findByIdAndUpdate(req.params.id,{$set: req.body},{new:true})
@@ -43,6 +64,11 @@ const update = async(req,res)=>{
   }
 }
 
+/**
+ * @route   DELETE /api/v1/products/:id
+ * @desc    Deletes Product from Database
+ * @access  Public --NEED TO CHANGE SO THAT ONLY ADMINS ARE ABLE TO ADD PRODUCTS
+ */
 const destroy = async(req,res)=>{
   try {
     const productId = req.params.id;

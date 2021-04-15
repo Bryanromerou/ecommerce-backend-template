@@ -2,6 +2,12 @@ const db = require("../models");
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
+
+/**
+ * @route   GET /api/v1/users
+ * @desc    Returns all of the users
+ * @access  Public
+ */
 const index = async (req,res)=>{
   try {
     const users = await db.User.find({}).populate('created_products')
@@ -10,6 +16,12 @@ const index = async (req,res)=>{
     res.status(400).json({ ERROR: error.message });
   }
 };
+
+/**
+ * @route   GET /api/v1/users/:id
+ * @desc    Returns User of given ID
+ * @access  Public
+ */
 const show = async(req,res) =>{
   try {
     const user = await db.User.findById(req.params.id).populate(['cart','created_products'])
@@ -18,6 +30,12 @@ const show = async(req,res) =>{
     res.status(400).json({ ERROR: error.message });
   }
 }
+
+/**
+ * @route   POST /v1/api/users
+ * @desc    Creates and Logs in User
+ * @access  Public
+ */
 const create = async (req,res)=>{
   const {email, password, name} = req.body;
 
@@ -62,10 +80,44 @@ const create = async (req,res)=>{
   res.send("create")
 };
 
+/**
+ * @route   POST /v1/api/users/login
+ * @desc    Logs in User
+ * @access  Public
+ */
+const login = async(req,res)=>{
+  const {email, password} = req.body;
+
+  if (!email || !password){
+      return res.status(400).json({ msg: 'Please enter all fields' });
+  }
+  try {
+    const user = await db.User.findOne({email});
+    if (!user) throw Error("User does not exist");
+
+    const isMatch = await bcrypt.compare(password,user.password);
+    if(!isMatch) throw Error("Invalid Credentials")
+
+    const token = jwt.sign({id:user._id},process.env.jwtSecret,{ expiresIn: 86400});
+    if(!token) throw Error("Could not sign Token");
+
+    res.status(200).json({
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email
+      }
+    });
+  } catch (error) {
+    res.status(400).json({ msg: error.message });
+  }
+}
 module.exports = {
   index,
   show,
   create,
+  login,
   // update,
   // destroy,
 }
