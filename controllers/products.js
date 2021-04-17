@@ -35,9 +35,8 @@ const show = async(req,res) =>{
  */
 const create = async(req,res)=>{
   try {
-    const user = await db.User.findById(req.body.user)
+    const user = await db.User.findById(req.user.id)
     if (!user) throw Error('User does not exist');
-
     const newProduct = await db.Product.create(req.body);
 
     user.created_products.push(newProduct._id);
