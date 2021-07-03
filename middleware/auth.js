@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const db = require("../models");
 
 const auth = (req,res,next)=>{
-  const token = req.header('x-auth-token');
+  const token = req.header('x-access-token');
 
   // Checking for a token
   if(!token)
