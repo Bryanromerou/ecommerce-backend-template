@@ -21,6 +21,8 @@ const ProductSchema = new Schema({
     type: Boolean,
     default: false
   },
+  sizes:[String],
+  images:[String],
   user_created: {
     type:mongoose.Schema.Types.ObjectId,
     ref: "User"
